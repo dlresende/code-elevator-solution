@@ -11,13 +11,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.lang.Integer.parseInt;
-import static java.lang.Integer.reverse;
 
 public class MyHttpServer
 {
     private static final int PORT = 9000;
 
-    private final Elevator elevator = new Elevator();
+    private Elevator elevator = new Elevator();
     private HttpServer server;
 
     void run() {
@@ -27,7 +26,8 @@ public class MyHttpServer
             server. createContext("/test", new TestHttpHandler());
             server. createContext("/call", new CallHttpHandler());
             server. createContext("/nextCommand", new NextCommandHttpHandler());
-            server. createContext("/go", new GoCommandHttpHandler());
+            server. createContext("/go", new GoHttpHandler());
+            server. createContext("/reset", new ResetHttpHandler());
 
             server.start();
             System.out.println("Server running on port " + PORT + "...");
@@ -76,7 +76,7 @@ public class MyHttpServer
         }
     }
 
-    private class GoCommandHttpHandler implements HttpHandler {
+    private class GoHttpHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
             String response = "";
@@ -101,5 +101,17 @@ public class MyHttpServer
             }
         }
         return result;
+    }
+
+    private class ResetHttpHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange httpExchange) throws IOException {
+            String response = "";
+            elevator = new Elevator();
+            httpExchange.sendResponseHeaders(200, response.length());
+            OutputStream os = httpExchange.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+        }
     }
 }

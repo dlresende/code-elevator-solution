@@ -102,6 +102,15 @@ public class MyHttpServerTest {
         assertThat(message).isEqualTo("UP");
     }
 
+    @Test
+    public void should_respond_200_on_reset() throws Exception {
+        HttpURLConnection connection = (HttpURLConnection) new URL("http://localhost:9000/reset").openConnection();
+
+        int responseCode = connection.getResponseCode();
+
+        assertThat(responseCode).isEqualTo(200);
+    }
+
     private String convertStreamToString(InputStream is) {
         Scanner s = new Scanner(is).useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
