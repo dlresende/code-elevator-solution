@@ -111,6 +111,24 @@ public class MyHttpServerTest {
         assertThat(responseCode).isEqualTo(200);
     }
 
+    @Test
+    public void should_respond_200_on_userHasExited() throws Exception {
+        HttpURLConnection connection = (HttpURLConnection) new URL("http://localhost:9000/userHasExited").openConnection();
+
+        int responseCode = connection.getResponseCode();
+
+        assertThat(responseCode).isEqualTo(200);
+    }
+
+    @Test
+    public void should_respond_200_on_userHasEntered() throws Exception {
+        HttpURLConnection connection = (HttpURLConnection) new URL("http://localhost:9000/userHasEntered").openConnection();
+
+        int responseCode = connection.getResponseCode();
+
+        assertThat(responseCode).isEqualTo(200);
+    }
+
     private String convertStreamToString(InputStream is) {
         Scanner s = new Scanner(is).useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";

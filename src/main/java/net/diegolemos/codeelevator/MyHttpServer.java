@@ -28,6 +28,8 @@ public class MyHttpServer
             server. createContext("/nextCommand", new NextCommandHttpHandler());
             server. createContext("/go", new GoHttpHandler());
             server. createContext("/reset", new ResetHttpHandler());
+            server. createContext("/userHasEntered", new UserHasEnteredOrExitedHttpHandler());
+            server. createContext("/userHasExited", new UserHasEnteredOrExitedHttpHandler());
 
             server.start();
             System.out.println("Server running on port " + PORT + "...");
@@ -104,6 +106,18 @@ public class MyHttpServer
     }
 
     private class ResetHttpHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange httpExchange) throws IOException {
+            String response = "";
+            elevator = new Elevator();
+            httpExchange.sendResponseHeaders(200, response.length());
+            OutputStream os = httpExchange.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+        }
+    }
+
+    private class UserHasEnteredOrExitedHttpHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
             String response = "";
