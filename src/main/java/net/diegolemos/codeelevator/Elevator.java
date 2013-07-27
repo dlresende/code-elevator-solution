@@ -28,7 +28,7 @@ public class Elevator {
         return floor;
     }
 
-    public Elevator callFrom(int callingFloor) {
+    public Elevator goTo(int callingFloor) {
         if(callingFloor < NUMBER_OF_FLOORS)
             calls[callingFloor] = true;
 

@@ -10,11 +10,15 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.lang.Integer.parseInt;
+import static java.lang.Integer.reverse;
+
 public class MyHttpServer
 {
     private static final int PORT = 9000;
-    private static HttpServer server;
-    private Elevator elevator = new Elevator();
+
+    private final Elevator elevator = new Elevator();
+    private HttpServer server;
 
     void run() {
         try {
@@ -23,6 +27,7 @@ public class MyHttpServer
             server. createContext("/test", new TestHttpHandler());
             server. createContext("/call", new CallHttpHandler());
             server. createContext("/nextCommand", new NextCommandHttpHandler());
+            server. createContext("/go", new GoCommandHttpHandler());
 
             server.start();
             System.out.println("Server running on port " + PORT + "...");
@@ -52,7 +57,7 @@ public class MyHttpServer
             String response = "Server is up!";
             String query = httpExchange.getRequestURI().getQuery();
             Map<String, String> params = mapQuery(query);
-            elevator.callFrom(Integer.parseInt(params.get("atFloor")));
+            elevator.goTo(parseInt(params.get("atFloor")));
             httpExchange.sendResponseHeaders(200, response.length());
             OutputStream os = httpExchange.getResponseBody();
             os.write(response.getBytes());
@@ -64,6 +69,20 @@ public class MyHttpServer
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
             String response = elevator.nextCommand();
+            httpExchange.sendResponseHeaders(200, response.length());
+            OutputStream os = httpExchange.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+        }
+    }
+
+    private class GoCommandHttpHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange httpExchange) throws IOException {
+            String response = "";
+            String query = httpExchange.getRequestURI().getQuery();
+            Map<String, String> params = mapQuery(query);
+            elevator.goTo(parseInt(params.get("floorToGo")));
             httpExchange.sendResponseHeaders(200, response.length());
             OutputStream os = httpExchange.getResponseBody();
             os.write(response.getBytes());
