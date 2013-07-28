@@ -14,14 +14,18 @@ import static java.lang.Integer.parseInt;
 
 public class MyHttpServer
 {
-    private static final int PORT = 9000;
+    private final int port;
 
     private Elevator elevator = new Elevator();
     private HttpServer server;
 
+    MyHttpServer(int port) {
+        this.port = port;
+    }
+
     void run() {
         try {
-            server = HttpServer.create(new InetSocketAddress(PORT), 0);
+            server = HttpServer.create(new InetSocketAddress(port), 0);
 
             server. createContext("/test", new TestHttpHandler());
             server. createContext("/call", new CallHttpHandler());
@@ -32,24 +36,25 @@ public class MyHttpServer
             server. createContext("/userHasExited", new UserHasEnteredOrExitedHttpHandler());
 
             server.start();
-            System.out.println("Server running on port " + PORT + "...");
+            System.out.println("Server running on port " + port + "...");
         } catch (IOException ioException) {
             throw new RuntimeException(ioException);
         }
     }
 
     public static void main( String[] args ) throws IOException {
-        new MyHttpServer().run();
+        new MyHttpServer(9000).run();
     }
 
     private class TestHttpHandler implements HttpHandler {
         @Override
-        public void handle(HttpExchange exchange) throws IOException {
+        public void handle(HttpExchange httpExchange) throws IOException {
             String response = "Server is up!";
-            exchange.sendResponseHeaders(200, response.length());
-            OutputStream os = exchange.getResponseBody();
+            httpExchange.sendResponseHeaders(200, response.length());
+            OutputStream os = httpExchange.getResponseBody();
             os.write(response.getBytes());
             os.close();
+            System.out.println(httpExchange.getRequestURI() + " " + response);
         }
     }
 
@@ -64,6 +69,7 @@ public class MyHttpServer
             OutputStream os = httpExchange.getResponseBody();
             os.write(response.getBytes());
             os.close();
+            System.out.println(httpExchange.getRequestURI() + " " + response);
         }
     }
 
@@ -75,6 +81,7 @@ public class MyHttpServer
             OutputStream os = httpExchange.getResponseBody();
             os.write(response.getBytes());
             os.close();
+            System.out.println(httpExchange.getRequestURI() + " " + response);
         }
     }
 
@@ -89,16 +96,20 @@ public class MyHttpServer
             OutputStream os = httpExchange.getResponseBody();
             os.write(response.getBytes());
             os.close();
+            System.out.println(httpExchange.getRequestURI() + " " + response);
         }
     }
 
     private Map<String, String> mapQuery(String query){
         Map<String, String> result = new HashMap<>();
+
         for (String param : query.split("&")) {
             String pair[] = param.split("=");
+
             if (pair.length>1) {
                 result.put(pair[0], pair[1]);
-            }else{
+            }
+            else{
                 result.put(pair[0], "");
             }
         }
@@ -114,6 +125,7 @@ public class MyHttpServer
             OutputStream os = httpExchange.getResponseBody();
             os.write(response.getBytes());
             os.close();
+            System.out.println(httpExchange.getRequestURI() + " " + response);
         }
     }
 
@@ -126,6 +138,7 @@ public class MyHttpServer
             OutputStream os = httpExchange.getResponseBody();
             os.write(response.getBytes());
             os.close();
+            System.out.println(httpExchange.getRequestURI() + " " + response);
         }
     }
 }
