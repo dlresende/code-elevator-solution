@@ -17,128 +17,107 @@ public class MyHttpServer
     private final int port;
 
     private Elevator elevator = new Elevator();
-    private HttpServer server;
 
     MyHttpServer(int port) {
         this.port = port;
     }
 
-    void run() {
-        try {
-            server = HttpServer.create(new InetSocketAddress(port), 0);
+    void run() throws IOException {
+        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
 
-            server. createContext("/test", new TestHttpHandler());
-            server. createContext("/call", new CallHttpHandler());
-            server. createContext("/nextCommand", new NextCommandHttpHandler());
-            server. createContext("/go", new GoHttpHandler());
-            server. createContext("/reset", new ResetHttpHandler());
-            server. createContext("/userHasEntered", new UserHasEnteredOrExitedHttpHandler());
-            server. createContext("/userHasExited", new UserHasEnteredOrExitedHttpHandler());
+        server.createContext("/test", new TestHttpHandler());
+        server.createContext("/call", new CallHttpHandler());
+        server.createContext("/nextCommand", new NextCommandHttpHandler());
+        server.createContext("/go", new GoHttpHandler());
+        server.createContext("/reset", new ResetHttpHandler());
+        server.createContext("/userHasEntered", new UserHasEnteredOrExitedHttpHandler());
+        server.createContext("/userHasExited", new UserHasEnteredOrExitedHttpHandler());
 
-            server.start();
-            System.out.println("Server running on port " + port + "...");
-        } catch (IOException ioException) {
-            throw new RuntimeException(ioException);
-        }
+        server.start();
+
+        System.out.println("Server running on port " + port + "...");
     }
 
     public static void main( String[] args ) throws IOException {
         new MyHttpServer(9000).run();
     }
 
-    private class TestHttpHandler implements HttpHandler {
+    private abstract class AbstractHttpHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
-            String response = "Server is up!";
+            String response = respond(httpExchange);
             httpExchange.sendResponseHeaders(200, response.length());
             OutputStream os = httpExchange.getResponseBody();
             os.write(response.getBytes());
             os.close();
             System.out.println(httpExchange.getRequestURI() + " " + response);
         }
+
+        public abstract String respond(HttpExchange httpExchange);
+
+        protected Map<String, String> mapQuery(String query){
+            Map<String, String> result = new HashMap<>();
+
+            for (String param : query.split("&")) {
+                String pair[] = param.split("=");
+
+                if (pair.length>1) {
+                    result.put(pair[0], pair[1]);
+                }
+                else{
+                    result.put(pair[0], "");
+                }
+            }
+            return result;
+        }
     }
 
-    private class CallHttpHandler implements HttpHandler {
+    private class TestHttpHandler extends AbstractHttpHandler {
         @Override
-        public void handle(HttpExchange httpExchange) throws IOException {
-            String response = "Server is up!";
+        public String respond(HttpExchange httpExchange) {
+            return "Server is up!";
+        }
+    }
+
+    private class CallHttpHandler extends AbstractHttpHandler {
+        @Override
+        public String respond(HttpExchange httpExchange) {
             String query = httpExchange.getRequestURI().getQuery();
             Map<String, String> params = mapQuery(query);
             elevator.goTo(parseInt(params.get("atFloor")));
-            httpExchange.sendResponseHeaders(200, response.length());
-            OutputStream os = httpExchange.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
-            System.out.println(httpExchange.getRequestURI() + " " + response);
+            return "";
         }
     }
 
-    private class NextCommandHttpHandler implements HttpHandler {
+    private class NextCommandHttpHandler extends AbstractHttpHandler {
         @Override
-        public void handle(HttpExchange httpExchange) throws IOException {
-            String response = elevator.nextCommand();
-            httpExchange.sendResponseHeaders(200, response.length());
-            OutputStream os = httpExchange.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
-            System.out.println(httpExchange.getRequestURI() + " " + response);
+        public String respond(HttpExchange httpExchange) {
+            return elevator.nextCommand();
         }
     }
 
-    private class GoHttpHandler implements HttpHandler {
+    private class GoHttpHandler extends AbstractHttpHandler {
         @Override
-        public void handle(HttpExchange httpExchange) throws IOException {
-            String response = "";
+        public String respond(HttpExchange httpExchange) {
             String query = httpExchange.getRequestURI().getQuery();
             Map<String, String> params = mapQuery(query);
             elevator.goTo(parseInt(params.get("floorToGo")));
-            httpExchange.sendResponseHeaders(200, response.length());
-            OutputStream os = httpExchange.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
-            System.out.println(httpExchange.getRequestURI() + " " + response);
+            return "";
         }
     }
 
-    private Map<String, String> mapQuery(String query){
-        Map<String, String> result = new HashMap<>();
-
-        for (String param : query.split("&")) {
-            String pair[] = param.split("=");
-
-            if (pair.length>1) {
-                result.put(pair[0], pair[1]);
-            }
-            else{
-                result.put(pair[0], "");
-            }
-        }
-        return result;
-    }
-
-    private class ResetHttpHandler implements HttpHandler {
+    private class ResetHttpHandler extends AbstractHttpHandler {
         @Override
-        public void handle(HttpExchange httpExchange) throws IOException {
-            String response = "";
+        public String respond(HttpExchange httpExchange) {
             elevator = new Elevator();
-            httpExchange.sendResponseHeaders(200, response.length());
-            OutputStream os = httpExchange.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
-            System.out.println(httpExchange.getRequestURI() + " " + response);
+            return "";
         }
     }
 
-    private class UserHasEnteredOrExitedHttpHandler implements HttpHandler {
+    private class UserHasEnteredOrExitedHttpHandler extends AbstractHttpHandler {
         @Override
-        public void handle(HttpExchange httpExchange) throws IOException {
-            String response = "";
-            elevator = new Elevator();
-            httpExchange.sendResponseHeaders(200, response.length());
-            OutputStream os = httpExchange.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
-            System.out.println(httpExchange.getRequestURI() + " " + response);
+        public String respond(HttpExchange httpExchange) {
+            return "";
         }
     }
 }

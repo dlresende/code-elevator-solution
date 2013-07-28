@@ -19,8 +19,7 @@ public class MyHttpServerTest {
     public static final String LOCALHOST = "http://localhost:" + TEST_PORT;
 
     @BeforeClass
-    public static void startServer()
-    {
+    public static void startServer() throws Exception {
         new MyHttpServer(TEST_PORT).run();
     }
 
