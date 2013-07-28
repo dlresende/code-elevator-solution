@@ -7,5 +7,5 @@
 `$ mvn exec:java -Dexec.mainClass="net.diegolemos.codeelevator.MyHttpServer"`
 
 ### More details
-https://github.com/xebia-france/code-elevator
-http://blog.xebia.fr/2013/07/15/techevent-code-elevator-un-concours-de-programmation/
+  1. https://github.com/xebia-france/code-elevator
+  2. http://blog.xebia.fr/2013/07/15/techevent-code-elevator-un-concours-de-programmation/
