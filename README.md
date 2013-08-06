@@ -7,4 +7,4 @@ My solution using an embedded Java server for the [Code Elevator Game](https://g
 ## Run
 - `mvn exec:java -Dexec.mainClass="net.diegolemos.codeelevator.MyHttpServer"`
 
-The server listens on port 8082: http://localhost:8082/test
+The server listens on port 8082: [http://localhost:8082/test](http://localhost:8082/test)
