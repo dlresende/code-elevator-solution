@@ -1,6 +1,7 @@
 package net.diegolemos.codeelevator;
 
-import static net.diegolemos.codeelevator.Elevator.Direction.*;
+import static net.diegolemos.codeelevator.Elevator.Direction.DOWN;
+import static net.diegolemos.codeelevator.Elevator.Direction.UP;
 
 public class Elevator {
     private static final int NUMBER_OF_FLOORS = 6;

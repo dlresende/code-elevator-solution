@@ -2,7 +2,7 @@ package net.diegolemos.codeelevator;
 
 import org.junit.Test;
 
-import static net.diegolemos.codeelevator.Elevator.Direction.*;
+import static net.diegolemos.codeelevator.Elevator.Direction.UP;
 import static org.fest.assertions.Assertions.assertThat;
 
 public class ElevatorTest {
