@@ -24,7 +24,7 @@ public class MyHttpServerTest {
     }
 
     @Test
-    public void server_should_be_up() throws Exception {
+    public void _0_server_should_be_up() throws Exception {
         HttpURLConnection connection = (HttpURLConnection) new URL(LOCALHOST + "/test").openConnection();
 
         int responseCode = connection.getResponseCode();
