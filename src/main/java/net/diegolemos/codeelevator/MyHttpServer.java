@@ -30,8 +30,8 @@ public class MyHttpServer
         server.createContext("/nextCommand", new NextCommandHttpHandler());
         server.createContext("/go", new GoHttpHandler());
         server.createContext("/reset", new ResetHttpHandler());
-        server.createContext("/userHasEntered", new UserHasEnteredOrExitedHttpHandler());
-        server.createContext("/userHasExited", new UserHasEnteredOrExitedHttpHandler());
+        server.createContext("/userHasEntered", new DoNothing());
+        server.createContext("/userHasExited", new DoNothing());
 
         server.start();
 
@@ -114,7 +114,7 @@ public class MyHttpServer
         }
     }
 
-    private class UserHasEnteredOrExitedHttpHandler extends AbstractHttpHandler {
+    private class DoNothing extends AbstractHttpHandler {
         @Override
         public String respond(HttpExchange httpExchange) {
             return "";
