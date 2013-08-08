@@ -15,8 +15,8 @@ import static org.junit.runners.MethodSorters.NAME_ASCENDING;
 @FixMethodOrder(NAME_ASCENDING)
 public class MyHttpServerTest {
 
-    public static final int TEST_PORT = 8001;
-    public static final String LOCALHOST = "http://localhost:" + TEST_PORT;
+    private static final int TEST_PORT = 8001;
+    private static final String LOCALHOST = "http://localhost:" + TEST_PORT;
 
     @BeforeClass
     public static void startServer() throws Exception {
