@@ -43,6 +43,8 @@ public class MyHttpServer
     }
 
     private abstract class AbstractHttpHandler implements HttpHandler {
+        protected static final String OK = "OK";
+
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
             String response = respond(httpExchange);
@@ -85,7 +87,7 @@ public class MyHttpServer
             String query = httpExchange.getRequestURI().getQuery();
             Map<String, String> params = mapQuery(query);
             elevator.goTo(parseInt(params.get("atFloor")));
-            return "";
+            return OK;
         }
     }
 
@@ -102,7 +104,7 @@ public class MyHttpServer
             String query = httpExchange.getRequestURI().getQuery();
             Map<String, String> params = mapQuery(query);
             elevator.goTo(parseInt(params.get("floorToGo")));
-            return "";
+            return OK;
         }
     }
 
@@ -110,14 +112,14 @@ public class MyHttpServer
         @Override
         public String respond(HttpExchange httpExchange) {
             elevator = new Elevator();
-            return "";
+            return OK;
         }
     }
 
     private class DoNothing extends AbstractHttpHandler {
         @Override
         public String respond(HttpExchange httpExchange) {
-            return "";
+            return OK;
         }
     }
 }
