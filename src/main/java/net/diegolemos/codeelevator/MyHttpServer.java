@@ -16,6 +16,8 @@ public class MyHttpServer
 {
     private final int port;
 
+    private HttpServer server;
+
     private Elevator elevator = new Elevator();
 
     MyHttpServer(int port) {
@@ -23,7 +25,7 @@ public class MyHttpServer
     }
 
     void run() throws IOException {
-        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+        server = HttpServer.create(new InetSocketAddress(port), 0);
 
         server.createContext("/test", new TestHttpHandler());
         server.createContext("/call", new CallHttpHandler());
@@ -40,6 +42,13 @@ public class MyHttpServer
 
     public static void main( String[] args ) throws IOException {
         new MyHttpServer(9000).run();
+    }
+
+    void shutdown() {
+        if(server != null) {
+            System.out.println("Stopping server...");
+            server.stop(2);
+        }
     }
 
     private abstract class AbstractHttpHandler implements HttpHandler {

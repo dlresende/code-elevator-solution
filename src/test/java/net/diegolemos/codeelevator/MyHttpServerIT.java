@@ -1,5 +1,6 @@
 package net.diegolemos.codeelevator;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -13,13 +14,13 @@ import static org.fest.assertions.Assertions.*;
 
 public class MyHttpServerIT
 {
-
     private static final int TEST_PORT = 8001;
     private static final String LOCALHOST = "http://localhost:" + TEST_PORT;
+    private static MyHttpServer server = new MyHttpServer(TEST_PORT);
 
     @BeforeClass
     public static void startServer() throws Exception {
-        new MyHttpServer(TEST_PORT).run();
+        server.run();
     }
 
     @Test
@@ -55,5 +56,10 @@ public class MyHttpServerIT
     private String convertStreamToString(InputStream is) {
         Scanner s = new Scanner(is).useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
+    }
+
+    @AfterClass
+    public static void stopServer() {
+        server.shutdown();
     }
 }
